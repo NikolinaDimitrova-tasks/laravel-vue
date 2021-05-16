@@ -1,0 +1,18 @@
+.form-container{
+    
+    padding-top: 50px;
+}
+
+.form-small{
+    width: 600px;
+    margin: auto;
+}
+
+.navBar__link{
+    list-style: none;
+display: flex;
+}
+
+.navBar__link li{
+    padding: 0 20px;
+}
