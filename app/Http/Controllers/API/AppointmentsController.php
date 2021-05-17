@@ -1,9 +1,10 @@
-<?php
+ <?php
 
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class AppointmentsController extends Controller
 {
@@ -14,7 +15,7 @@ class AppointmentsController extends Controller
      */
     public function index()
     {
-        $appointments = Appointment::get();
+        $appointments = Appointment::orderby('date','desc')->get();
         return $appointments;
     }
 
@@ -25,7 +26,7 @@ class AppointmentsController extends Controller
      */
     public function create()
     {
-        return view('appointment.create');
+         
     }
 
     /**
@@ -41,16 +42,31 @@ class AppointmentsController extends Controller
             'date'=>'required',
             'time'=>'required', 
             'phone'=>'required',
-            'email'=>'required'
+            'email' =>['required', 'unique:users,email', 'email'],
         ]);
-         Appointment::create([
-            'name' => $request->input('name'),
-            'date' => $request->input('date'),
-            'time' => $request->input('time'),
-            'phone' => $request->input('phone'),
-            'email' => $request->input('email')           
-        ]);
-        return ['message','Appointment created']; 
+
+
+      
+      $date = $request->date;
+      $appointment= Appointment::where('date',$date)->first();
+      if($appointment){
+          return redirect()->back()->with('errmessage','Appointment time not available for this date');
+      }
+      else
+      {
+          Appointment::create([
+             'name' => $request->name,
+             'date' => $request->date,
+             'time' => $request->time,
+             'phone' => $request->phone,
+             'email' => $request->email           
+         ]);
+         
+         return ['message','Appointment created']; 
+
+      }
+
+
     }
 
     /**
@@ -97,4 +113,6 @@ class AppointmentsController extends Controller
     {
         //
     }
+
+   
 }
